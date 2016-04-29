@@ -34,6 +34,7 @@
         view.padding = UIEdgeInsetsMake(12, 12, 12, 12);
         view.interitemSpacing = 15;
         view.lineSpacing = 10;
+        view.alignment = 1;
         __weak SKTagView *weakView = view;
         view.didTapTagAtIndex = ^(NSUInteger index){
             [weakView removeTagAtIndex:index];

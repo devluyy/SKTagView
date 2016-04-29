@@ -17,6 +17,9 @@
 @property (assign, nonatomic) BOOL singleLine;
 @property (copy, nonatomic, nullable) void (^didTapTagAtIndex)(NSUInteger index);
 
+// 0左对其 1右对其
+@property (nonatomic, assign) NSInteger alignment;
+
 - (void)addTag: (nonnull SKTag *)tag;
 - (void)insertTag: (nonnull SKTag *)tag atIndex:(NSUInteger)index;
 - (void)removeTag: (nonnull SKTag *)tag;

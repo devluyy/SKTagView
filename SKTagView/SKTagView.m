@@ -74,9 +74,9 @@
 }
 
 - (void)layoutSubviews {
-    if (!self.singleLine) {
+//    if (!self.singleLine) {
         self.preferredMaxLayoutWidth = self.frame.size.width;
-    }
+//    }
     
     [super layoutSubviews];
     
@@ -112,39 +112,84 @@
     CGFloat topPadding = self.padding.top;
     CGFloat leftPadding = self.padding.left;
     CGFloat rightPadding = self.padding.right;
+    CGFloat bottomPadding = self.padding.bottom;
     CGFloat itemSpacing = self.interitemSpacing;
     CGFloat lineSpacing = self.lineSpacing;
     CGFloat currentX = leftPadding;
     
-    if (!self.singleLine && self.preferredMaxLayoutWidth > 0) {
-        for (UIView *view in subviews) {
-            CGSize size = view.intrinsicContentSize;
-            if (previousView) {
-                CGFloat width = size.width;
-                currentX += itemSpacing;
-                if (currentX + width + rightPadding <= self.preferredMaxLayoutWidth) {
-                    view.frame = CGRectMake(currentX, CGRectGetMinY(previousView.frame), size.width, size.height);
-                    currentX += size.width;
+    if (self.alignment == 0) {
+        if (!self.singleLine && self.preferredMaxLayoutWidth > 0) {
+            for (UIView *view in subviews) {
+                CGSize size = view.intrinsicContentSize;
+                if (previousView) {
+                    CGFloat width = size.width;
+                    currentX += itemSpacing;
+                    if (currentX + width + rightPadding <= self.preferredMaxLayoutWidth) {
+                        view.frame = CGRectMake(currentX, CGRectGetMinY(previousView.frame), size.width, size.height);
+                        currentX += size.width;
+                    } else {
+                        CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
+                        view.frame = CGRectMake(leftPadding, CGRectGetMaxY(previousView.frame) + lineSpacing, width, size.height);
+                        currentX = leftPadding + width;
+                        
+                    }
                 } else {
                     CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
-                    view.frame = CGRectMake(leftPadding, CGRectGetMaxY(previousView.frame) + lineSpacing, width, size.height);
-                    currentX = leftPadding + width;
+                    view.frame = CGRectMake(leftPadding, topPadding, width, size.height);
+                    currentX += width;
                 }
-            } else {
-                CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
-                view.frame = CGRectMake(leftPadding, topPadding, width, size.height);
-                currentX += width;
+                
+                previousView = view;
             }
             
-            previousView = view;
+        } else {
+            for (UIView *view in subviews) {
+                CGSize size = view.intrinsicContentSize;
+                view.frame = CGRectMake(currentX, topPadding, size.width, size.height);
+                currentX += size.width;
+                
+                previousView = view;
+            }
         }
+        //        右对齐
     } else {
-        for (UIView *view in subviews) {
-            CGSize size = view.intrinsicContentSize;
-            view.frame = CGRectMake(currentX, topPadding, size.width, size.height);
-            currentX += size.width;
+        
+        CGFloat currentX = self.preferredMaxLayoutWidth - rightPadding;
+        
+        if (!self.singleLine && self.preferredMaxLayoutWidth > 0) {
+            for (UIView *view in subviews) {
+                CGSize size = view.intrinsicContentSize;
+                if (previousView) {
+                    CGFloat width = size.width;
+                    currentX -= itemSpacing;
+                    if (currentX - width - leftPadding >= 0) {
+                        currentX -= size.width;
+                        view.frame = CGRectMake(currentX, CGRectGetMinY(previousView.frame), size.width, size.height);
+                        
+                    } else {
+                        CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
+                        currentX = self.preferredMaxLayoutWidth - rightPadding - width;
+                        view.frame = CGRectMake(currentX, CGRectGetMaxY(previousView.frame) + lineSpacing, width, size.height);
+                    }
+                } else {
+                    CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
+                    currentX -= width;
+                    view.frame = CGRectMake(currentX, topPadding, width, size.height);
+                }
+                
+                previousView = view;
+            }
             
-            previousView = view;
+        } else {
+            currentX -= rightPadding;
+            for (UIView *view in subviews) {
+                CGSize size = view.intrinsicContentSize;
+                currentX -= size.width;
+                view.frame = CGRectMake(currentX, topPadding, size.width, size.height);
+                currentX -= itemSpacing;
+                previousView = view;
+            }
+            
         }
     }
     
