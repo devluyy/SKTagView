@@ -112,7 +112,7 @@
     CGFloat topPadding = self.padding.top;
     CGFloat leftPadding = self.padding.left;
     CGFloat rightPadding = self.padding.right;
-    CGFloat bottomPadding = self.padding.bottom;
+//    CGFloat bottomPadding = self.padding.bottom;
     CGFloat itemSpacing = self.interitemSpacing;
     CGFloat lineSpacing = self.lineSpacing;
     CGFloat currentX = leftPadding;
